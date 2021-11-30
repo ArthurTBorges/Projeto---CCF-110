@@ -6,8 +6,8 @@ cálculo de estatísticas relacionadas às minhas operações no mercado.
 
 OBS Iniciais: 
 O trading esportivo possui vários mercados, como os de gols, escanteios e resultados.
-Operações no mercado são o equivalente às apostas
-Sabe-se que as minhas operações seguem um padrão definido e o valor das mesmas são calculados em porcntagem de banca. (Banca é o valor disponível para investimento)
+Operações no mercado são o equivalente às apostas.
+Sabe-se que as minhas operações seguem um padrão definido e o valor das mesmas são calculados em porcntagem de banca. (Banca é o valor disponível para investimento).
  
 Funções do código: Calcular o lucro (Diário, semanal e mensal), a taxa de lucro e acertividade de cada mercado (Diária, semanal e mensal) e ranquear os mercados mais 
 rentáveis. O programa tem três estágios, são eles:
