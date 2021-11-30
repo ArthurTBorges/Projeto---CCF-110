@@ -1,5 +1,7 @@
 # Projeto---CCF-110
 
+>Arthur Teodoro Borges, Programa de cálculo de lucro e acertividade
+
 Olá! Meu nome é Arthur Teodoro, sou aluno de Ciência da computação na UFV-CaF e este é um projeto da disciplina de programação. Além de estudante, tambêm ocupo meu tempo 
 atuando no trader esportivo, que é, basicamente, o mercado de apostas esportivas. A partir disso surge minha ideia de projeto, um programa que automatize e agilize o 
 cálculo de estatísticas relacionadas às minhas operações no mercado.
