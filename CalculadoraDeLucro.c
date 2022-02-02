@@ -1,93 +1,101 @@
 //Objetivos do código:
 // 1) Ler as operações feitas no mercado no periodo de 1 dia.
-// 2) Separar as operaçôes por tipo de mercado.( Overgols, Virtual e escanteio asiatico)
+// 2) Separar as operaçôes por tipo de mercado.( Overgols e Virtual)
 // 3) Calcular o lucro diario e taxa de acertividade.
 //OBSERVAÇÕES:
-// 1) Odd = porcentagem de lucro. Ex: odd 0,45 = 45% de lucro na operação.
-// 2) As são feitas sempre com 1%.
-// 3)
+// 1) As operações acertivas tem sempre a mesma recompensa por mercado.
+
+
 
 #include <stdio.h>
 
 int main(){
-    int i, qOver, qVirtual, qAsiatico, banca;
-    printf("Valor da banca:\n");
-    scanf("%d", &banca);
 
-    //Recebendo dados e calculando a porcentagem de lucro do mercado de Overgols
+    //Recebendo os valores e resultados das apostas.
+    //O programa cria duas matrizes para guardar na primeira linha o valor das apostas e o resultado na segunda.
+
+    int qOver;
     printf("Quantas operacoes foram feitas no mercado de OVERGOLS?\n");
     scanf("%d", &qOver);
-    float mercOvergols[qOver], acertosOver = 0;
-    for(i = 0; i < qOver; i++){
-        int resultado;
-        printf("A operação foi bem sucedida? SIM = 1/NAO = 0:\n");
-        scanf("%d", &resultado);
-        if(resultado == 1){
-            printf("Valor da Odd:\n");
-            scanf("%f", mercOvergols[i]);
-            acertosOver++;
+    float operacoesOver[2][qOver];
+    for(int i = 0; i < qOver; i++){
+        int aux;
+        printf("Valor da aposta %d:\n", i);
+        scanf("%f", &operacoesOver[0][i]);
+        printf("Aposta bem sucedida? Use 1 para SIM e 0 para NAO:\n");
+        scanf("%f", &aux);
+        if(aux == 1){
+            operacoesOver[1][i] = 0.7;
         }
         else{
-            mercOvergols[i] = -1;
+            operacoesOver[1][i] = -1;
         }
     }
 
-    //Recebendo dados e calculando a porcentagem de lucro do mercado Virtual
+    int qVirtual;
     printf("Quantas operacoes foram feitas no mercado VIRTUAL?\n");
     scanf("%d", &qVirtual);
-    float mercVirtual[qVirtual], acertosVirtual = 0;
-    for(i = 0; i < qVirtual; i++){
-        int resultado;
-        printf("A operação foi bem sucedida? SIM = 1/NAO = 0:\n");
-        scanf("%d", &resultado);
-        if(resultado == 1){
-            printf("Valor da Odd:\n");
-            scanf("%f", mercVirtual[i]);
-            acertosVirtual++;
+    float operacoesVirtual[2][qVirtual];
+    for(int i = 0; i < qVirtual; i++){
+        int aux;
+        printf("Valor da aposta %d:\n", i);
+        scanf("%f", &operacoesVirtual[0][i]);
+        printf("Aposta bem sucedida? Use 1 para SIM e 0 para NAO:\n");
+        scanf("%f", &aux);
+        if(aux == 1){
+            operacoesVirtual[1][i] = 0.7;
         }
         else{
-            mercVirtual[i] = -1;
+            operacoesVirtual[1][i] = -1;
         }
     }
 
-    //Recebendo dados e calculando a porcentagem de lucro do mercado de Escanteios asiaticos
-    printf("Quantas operacoes foram feitas no mercado de ESCANTEIOS ASIATICOS?\n");
-    scanf("%d", &qAsiatico);
-    float mercAsiatico[qAsiatico], acertosAsiatico = 0;
-    for(i = 0; i < qAsiatico; i++){
-        int resultado;
-        printf("A operação foi bem sucedida? SIM = 1/NAO = 0:\n");
-        scanf("%d", &resultado);
-        if(resultado == 1){
-            printf("Valor da Odd:\n");
-            scanf("%f", mercAsiatico[i]);
-            acertosAsiatico++;
+    //Calculando lucro:
+    float lucroOver = 0, lucroVirtual = 0;
+    for(int i = 0; i < qOver; i++){
+        lucroOver *= operacoesOver[0][i] * operacoesOver[1][i];
+    }
+    for(int i = 0; i < qVirtual; i++){
+        lucroVirtual += operacoesVirtual[0][i] * operacoesVirtual[1][i];
+    }
+
+    //Calculando a quantidade de acertos para definir a acertividade:
+    float acertosOver = 0, acertosVirtual = 0;
+    for(int i = 0; i < qOver; i++){
+        if(operacoesOver[1][i] > 0){
+            acertosOver += 1;
         }
-        else{
-            mercAsiatico[i] = -1;
+    }
+    for(int i = 0; i < qVirtual; i++){
+        if(operacoesVirtual[1][i] > 0){
+            acertosVirtual += 1;
         }
     }
 
-    //Calculando resultados do dia
-    float porcentagemTotal = 0;
-    float acertividadeOver = acertosOver / qOver;
-    float acertividadeVirtual = acertosVirtual / qVirtual;
-    float acertividadeAsiatico = acertosAsiatico / qAsiatico;
-    int todasAsEntradas = qAsiatico + qVirtual + qOver;
-    for(i = 0; i < todasAsEntradas; i++){
-        porcentagemTotal += mercAsiatico[i];
-        porcentagemTotal += mercOvergols[i];
-        porcentagemTotal += mercVirtual[i];
-    }
-    float total = (porcentagemTotal / 100) * banca;
+    //Calculando acertividade:
+    float acertividadeOver = (acertosOver * 100) / qOver;
+    float acertividadeVirtual = (acertosVirtual * 100) / qVirtual;
 
-    //Imprimindo os resultados
-    printf("RESUMO DO DIA:\n\n");
-    printf("Banca de R$ %d\n", banca);
-    printf("Mercado de Overgols, acertividade de %.2f\n", acertividadeOver);
-    printf("Mercado de Escanteio asiatico, acertividade de %.2f\n", acertividadeAsiatico);
-    printf("Mercado de Futebol Virtual, acertividade de %.2f\n", acertividadeVirtual);
+    //Definindo variaveis para ajudar o raciocinio:
+    float acertosTotal = acertosVirtual + acertosOver;
+    float lucroTotal = lucroVirtual + lucroOver;
 
-    printf("Lucro total = R$ %.2f, %.2f % de lucro", total, porcentagemTotal);
+    //Informando os resultados:
+    printf("\n>>>RESULTADO DIARIO<<<\n\n");
+
+    printf("Resultados do mercado de Overgols:\n");
+    printf("Lucro = R$ %.2f\n", lucroOver);
+    printf("Foram %f operacoes bem sucedidas", acertosOver);
+    printf("Acertividade = %.2f %\n\n", acertividadeOver);
+
+    printf("Resultados do mercado Virtual:\n");
+    printf("Lucro = R$ %.2f\n", lucroVirtual);
+    printf("Foram %f operacoes bem sucedidas\n", acertosVirtual);
+    printf("Acertividade = %.2f %\n\n", acertividadeVirtual);
+
+    printf("Resultado final\n");
+    printf("%f operacoes bem sucedidas no total\n", acertosTotal);
+    printf("Lucro Total = R$ %.2f\n", lucroTotal);
+
     return 0;
 }
