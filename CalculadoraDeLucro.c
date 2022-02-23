@@ -12,7 +12,6 @@
 int main(){
 
     //Recebendo os valores e resultados das apostas.
-    //O programa cria duas matrizes para guardar na primeira linha o valor das apostas e o resultado(falha ou sucesso) na segunda.
 
     int qOver;
     printf("Quantas operacoes foram feitas no mercado de OVERGOLS?\n");
