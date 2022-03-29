@@ -9,16 +9,15 @@ cálculo de estatísticas relacionadas às minhas operações no mercado.
 OBS Iniciais: 
 O trading esportivo possui vários mercados, como os de gols, escanteios e resultados.
 Operações no mercado são o equivalente às apostas.
-Sabe-se que as minhas operações seguem um padrão definido e o valor das mesmas são calculados em porcntagem de banca. (Banca é o valor disponível para investimento).
  
-Funções do código: Calcular o lucro (Diário, semanal e mensal), a taxa de lucro e acertividade de cada mercado (Diária, semanal e mensal) e ranquear os mercados mais 
-rentáveis. O programa tem três estágios, são eles:
+Funções do código: Calcular o lucro , perdas e entradas devolvidas pelo mercado. Detalhar o lucro ou perda de cada entrada e informar.
+O programa tem três estágios, são eles:
 
 1°) "Esqueleto básico": entrada e saída, calculo de porcentagens e ranqueamento.
 
 2°) "Estruturação": criação de funcões e ponteiros para organizar o código.
 
-3°) "Final": comandos de ler e escrever arquivos para relatar os resultados
+3°) "Final": comandos de escrever arquivos para relatar os resultados e detalhamento de operações.
 
 
 Este é meu projeto para a Disciplina de CCF-110
