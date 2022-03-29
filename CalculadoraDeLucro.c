@@ -1,100 +1,201 @@
-//Objetivos do código:
-// 1) Ler as operações feitas no mercado no periodo de 1 dia.
-// 2) Separar as operaçôes por tipo de mercado.( Overgols e Virtual)
-// 3) Calcular o lucro diario e taxa de acertividade.
-//OBSERVAÇÕES:
-// 1) As operações acertivas tem sempre a mesma recompensa por mercado.
-
-
-
 #include <stdio.h>
+#include <stdlib.h>
 
-int main(){
+typedef struct{
+    int dia, mes, ano, quantidade;
+}inicializar;
 
-    //Recebendo os valores e resultados das apostas.
+typedef struct{
+    int resultado;
+    float valor, odd, retornoBruto, lucro;
+    char mercado[100];
+}Entrada;
 
-    int qOver;
-    printf("Quantas operacoes foram feitas no mercado de OVERGOLS?\n");
-    scanf("%d", &qOver);
-    float operacoesOver[2][qOver];
-    for(int i = 0; i < qOver; i++){
-        int aux;
-        printf("Valor da aposta %d:\n", i);
-        scanf("%f", &operacoesOver[0][i]);
-        printf("Aposta bem sucedida? Use 1 para SIM e 0 para NAO:\n");
-        scanf("%f", &aux);
-        if(aux == 1){
-            operacoesOver[1][i] = 0.7;
+
+inicializar lerData(){
+    inicializar inic;
+    printf("Digite a data(dd mm aaaa):\n"); //Recebendo a data
+    scanf("%d %d %d", &inic.dia, &inic.mes, &inic.ano);
+
+    printf("Quantas entradas foram feitas:\n");
+    scanf("%d", &inic.quantidade);
+
+    return inic;
+}
+
+float calculaResult(float valor, float odd){
+    float lucro;
+    if(odd < 0){
+        lucro = -1 * valor;
+    }
+    else{
+        if(odd > 0){
+            lucro = odd * valor;
         }
         else{
-            operacoesOver[1][i] = -1;
+            lucro = 0;
         }
     }
+    return lucro;
+}
 
-    int qVirtual;
-    printf("Quantas operacoes foram feitas no mercado VIRTUAL?\n");
-    scanf("%d", &qVirtual);
-    float operacoesVirtual[2][qVirtual];
-    for(int i = 0; i < qVirtual; i++){
-        int aux;
-        printf("Valor da aposta %d:\n", i);
-        scanf("%f", &operacoesVirtual[0][i]);
-        printf("Aposta bem sucedida? Use 1 para SIM e 0 para NAO:\n");
-        scanf("%f", &aux);
-        if(aux == 1){
-            operacoesVirtual[1][i] = 0.7;
+int verificaResultado(float retorno){
+    int res;
+    if(retorno == 0){
+        res = 0;
+    }
+    else{
+        if(retorno > 0){
+            res = 1;
         }
         else{
-            operacoesVirtual[1][i] = -1;
+            res = -1;
         }
     }
 
-    //Calculando lucro:
-    float lucroOver = 0, lucroVirtual = 0;
-    for(int i = 0; i < qOver; i++){
-        lucroOver *= operacoesOver[0][i] * operacoesOver[1][i];
+    return res;
+}
+
+int calculaAcertos(float retorno){
+    int acert = 0;
+    if(retorno > 0){
+        acert = 1;
     }
-    for(int i = 0; i < qVirtual; i++){
-        lucroVirtual += operacoesVirtual[0][i] * operacoesVirtual[1][i];
+    return acert;
+}
+
+int calculaErros(float retorno){
+    int err;
+    if(retorno > 0){
+        err = 0;
+    }
+    else{
+        err = 1;
     }
 
-    //Calculando a quantidade de acertos para definir a acertividade:
-    float acertosOver = 0, acertosVirtual = 0;
-    for(int i = 0; i < qOver; i++){
-        if(operacoesOver[1][i] > 0){
-            acertosOver += 1;
+    return err;
+}
+
+float calculaSoma(float retorno, float valor){
+    float total;
+    if(retorno <= 0){
+        total = retorno;
+    }
+    else{
+        total = retorno - valor;
+    }
+
+    return total;
+}
+
+float calculaLucro(float valor, float odd, float retorno){
+    float lucro;
+    if(odd == 0){
+        lucro = 0;
+    }else{
+        if(odd < 0){
+            lucro = -1 * valor;
+        }else{
+            lucro = retorno - valor;
         }
     }
-    for(int i = 0; i < qVirtual; i++){
-        if(operacoesVirtual[1][i] > 0){
-            acertosVirtual += 1;
+    return lucro;
+}
+
+
+Entrada lerEntrada(int *acertos, int *erros, float *soma){
+    Entrada p;
+    printf("Digite o mercado:\n");
+    scanf("%s",p.mercado);
+    printf("Digite o valor de entrada:\n");
+    scanf("%f", &p.valor);
+    printf("Digite a ODD:\n");
+    scanf("%f", &p.odd);
+
+    p.retornoBruto = calculaResult(p.valor, p.odd);
+
+    p.resultado = verificaResultado(p.retornoBruto);
+
+    p.lucro = calculaLucro(p.valor, p.odd, p.retornoBruto);
+
+    *acertos += calculaAcertos(p.retornoBruto);
+    *erros += calculaErros(p.retornoBruto);
+    *soma += calculaSoma(p.retornoBruto, p.valor);
+
+    return p;
+}
+
+void escreveArquivo(int *ptrAcertos, int *ptrErros, float *ptrSoma, int dia, int mes, int ano){
+
+    inicializar inicial;
+    int tam = inicial.quantidade;
+    Entrada x[tam];
+
+
+    FILE *f;
+    f = fopen("Relatorio.txt", "w");
+    if(f == NULL){
+        printf("Erro de abertura!\n");
+        system("pause");
+        exit(1);
+    }
+
+    fprintf(f, "***RELATORIO %d %d %d***\n\n", dia, mes, ano);
+    fprintf(f, "Lucro total: R$ %.2f\n", *ptrSoma);
+    fprintf(f, "Erros: %d\n", *ptrErros);
+    fprintf(f, "Acertos: %d\n\n", *ptrAcertos);
+
+    fclose(f);
+}
+
+void imprimirResult(Entrada p){
+
+    FILE *f;
+    f = fopen("Relatorio.txt", "a");
+    if(f == NULL){
+        printf("Erro de reabertura!\n");
+        system("pause");
+        exit(1);
+    }
+
+    fprintf(f, "\nMercado: %s\n", p.mercado);
+    fprintf(f, "Aposta:R$ %.2f\n", p.valor);
+    fprintf(f, "Odd: %.2f\n", p.odd);
+    fprintf(f, "Retorno:R$ %.2f\n", p.retornoBruto);
+    fprintf(f, "Lucro:R$ %.2f\n", p.lucro);
+    if(p.resultado == 0){
+        fprintf(f, "NULA\n");
+    }else{
+        if(p.resultado == -1){
+            fprintf(f, "PERDIDA\n");
+        }else{
+            fprintf(f, "ACERTIVA\n");
         }
     }
 
-    //Calculando acertividade:
-    float acertividadeOver = (acertosOver * 100) / qOver;
-    float acertividadeVirtual = (acertosVirtual * 100) / qVirtual;
+}
 
-    //Definindo variaveis para ajudar o raciocinio:
-    float acertosTotal = acertosVirtual + acertosOver;
-    float lucroTotal = lucroVirtual + lucroOver;
+int main() {
 
-    //Informando os resultados:
-    printf("\n>>>RESULTADO DIARIO<<<\n\n");
+    inicializar inicial; //rececendo data e quantidade de operações
+    inicial = lerData();
 
-    printf("Resultados do mercado de Overgols:\n");
-    printf("Lucro = R$ %.2f\n", lucroOver);
-    printf("Foram %f operacoes bem sucedidas", acertosOver);
-    printf("Acertividade = %.2f %\n\n", acertividadeOver);
+    //definindo a quantidade de structs e definindo ponteiros
+    int i, tam = inicial.quantidade;
+    Entrada x[tam];
+    int acertos = 0, erros = 0;
+    int *ptrAcertos = &acertos, *ptrErros = &erros;
+    float soma = 0;
+    float *ptrSoma = & soma;
 
-    printf("Resultados do mercado Virtual:\n");
-    printf("Lucro = R$ %.2f\n", lucroVirtual);
-    printf("Foram %f operacoes bem sucedidas\n", acertosVirtual);
-    printf("Acertividade = %.2f %\n\n", acertividadeVirtual);
+    for(i = 0; i < tam; i++){
+        x[i] = lerEntrada(ptrAcertos, ptrErros, ptrSoma);
+    }
 
-    printf("Resultado final\n");
-    printf("%f operacoes bem sucedidas no total\n", acertosTotal);
-    printf("Lucro Total = R$ %.2f\n", lucroTotal);
+    escreveArquivo(ptrAcertos, ptrErros, ptrSoma, inicial.dia, inicial.mes, inicial.ano);
 
+    for(i = 0; i < tam; i++){
+        imprimirResult(x[i]);
+    }
     return 0;
 }
